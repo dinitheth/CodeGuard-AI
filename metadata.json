@@ -1,0 +1,5 @@
+{
+  "name": "CodeGuard AI",
+  "description": "AI-Powered GitHub Repository Bug Scanner & Fixer. Scans repositories for vulnerabilities, classifies severity, and suggests AI-generated fixes.",
+  "requestFramePermissions": []
+}
