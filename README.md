@@ -33,7 +33,7 @@ This project uses a cutting-edge stack designed for performance, modularity, and
 
 ## Key Features
 
-*   **Real-Time Repository Scanning:** Fetches and analyzes actual code files from public GitHub URLs. It detects file types (Python, JS, TS, Go, etc.) and processes them instantly.
+*   **Real-Time Repository Scanning:** Fetches and analyzes actual code files from public GitHub URLs. It detects file types (Python, JS, TS, Go, etc..) and processes them instantly.
 *   **Intelligent Vulnerability Detection:** Identifies SQL Injections, XSS, Logic Bugs, and Code Smells using the reasoning capabilities of Gemini 3.
 *   **Live Code Viewer:** Inspect the scanned file content directly in the dashboard with the specific vulnerable lines highlighted.
 *   **AI-Generated Fixes:** Provides side-by-side comparisons showing the original code vs. the AI-suggested patch.
