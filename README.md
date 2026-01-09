@@ -31,41 +31,27 @@ This project uses a cutting-edge stack designed for performance, modularity, and
 
 ---
 
-## Key Features
+## Deployment & Configuration
 
-*   **Real-Time Repository Scanning:** Fetches and analyzes actual code files from public GitHub URLs. It detects file types (Python, JS, TS, Go, etc..) and processes them instantly.
-*   **Intelligent Vulnerability Detection:** Identifies SQL Injections, XSS, Logic Bugs, and Code Smells using the reasoning capabilities of Gemini 3.
-*   **Live Code Viewer:** Inspect the scanned file content directly in the dashboard with the specific vulnerable lines highlighted.
-*   **AI-Generated Fixes:** Provides side-by-side comparisons showing the original code vs. the AI-suggested patch.
-*   **Auto-Draft Pull Requests:** One-click generation of professional PR titles and markdown descriptions based on the applied fixes.
-*   **Integrated AI Assistant:** Built-in ChatBot with a "Deep Reasoning" toggle to discuss code architecture or security implications.
+### Netlify Deployment
 
----
+To make the application work on Netlify, you must configure the API Key in the environment variables using the `VITE_` prefix.
 
-## How It Works
+1.  **Variable Name:** `VITE_API_KEY`
+2.  **Value:** Your Google GenAI API Key.
 
-1.  **Input:** User provides a public GitHub repository URL (e.g., `https://github.com/username/repo`).
-2.  **Fetch:** The application uses the GitHub API to crawl common directories (`src`, `lib`, `api`, etc.) and retrieve code files.
-3.  **Analyze:** The file content is sent to **Gemini 3 Flash**, which has a large context window ideal for reading code and spotting anomalies.
-4.  **Report:** The AI returns a structured JSON report of issues, severities, and suggested fixes.
-5.  **Fix:** The user can review issues, apply AI-generated patches, and generate a Pull Request summary using **Gemini 3 Pro**.
+**Steps:**
+1.  Go to **Site settings** > **Build & deploy** > **Environment**.
+2.  Click **Add variable**.
+3.  Key: `VITE_API_KEY`
+4.  Value: `AIzaSy...` (your actual key).
+5.  Re-deploy your site.
 
----
-
-## Use Cases
-
-### 1. Security Auditing
-Serve as an automated security auditor for open-source projects, catching critical vulnerabilities (like API key leaks or injection flaws) before they are merged.
-
-### 2. Code Review Automation
-Instantly identify code smells or style violations in new repositories without having to manually review every line, saving hours of developer time.
-
-### 3. Educational Tool
-When CodeGuard flags an issue, it explains the theory behind the bug. This turns every bug fix into a learning opportunity, helping junior developers upskill faster.
+> **Security Note:** Since this is a client-side application, the API key will be embedded in the browser build. For production environments handling sensitive data, it is recommended to proxy these requests through a backend server.
 
 ---
 
-## Installation & Setup
+## Installation & Setup (Local)
 
 1.  **Clone the repository**
     ```bash
@@ -80,7 +66,7 @@ When CodeGuard flags an issue, it explains the theory behind the bug. This turns
 3.  **Configure API Key**
     Create a `.env` file and add your Google Gemini API key:
     ```env
-    API_KEY=your_google_genai_api_key
+    VITE_API_KEY=your_google_genai_api_key
     ```
     *(Note: The app requires a valid API key to perform scans.)*
 

@@ -1,6 +1,11 @@
 import { GoogleGenAI, Type, Chat } from "@google/genai";
 import { Issue, Severity } from "../types";
 
+// Helper to safely get the API Key from environment variable
+const getApiKey = (): string => {
+  return process.env.API_KEY || '';
+};
+
 // Helper to fetch file content from GitHub API
 async function fetchGithubFile(repoUrl: string): Promise<{ name: string, content: string } | null> {
   try {
@@ -49,10 +54,10 @@ async function fetchGithubFile(repoUrl: string): Promise<{ name: string, content
 }
 
 export const analyzeCodeWithGemini = async (repoUrl: string): Promise<{ issues: Issue[], scannedFileContent: string }> => {
-  const apiKey = process.env.API_KEY || '';
+  const apiKey = getApiKey();
   
   if (!apiKey) {
-    throw new Error("API Key is missing in environment variables.");
+    throw new Error("API Key is missing. Please set API_KEY in your environment variables.");
   }
 
   // Try to fetch real code
@@ -140,7 +145,7 @@ export const analyzeCodeWithGemini = async (repoUrl: string): Promise<{ issues: 
 };
 
 export const createChat = (): Chat | null => {
-  const apiKey = process.env.API_KEY || '';
+  const apiKey = getApiKey();
   if (!apiKey) return null;
   
   const ai = new GoogleGenAI({ apiKey });
@@ -154,7 +159,7 @@ export const createChat = (): Chat | null => {
 };
 
 export const generatePRDetails = async (issues: Issue[]): Promise<{ title: string; description: string }> => {
-  const apiKey = process.env.API_KEY || '';
+  const apiKey = getApiKey();
   
   if (!apiKey || issues.length === 0) {
      return {
