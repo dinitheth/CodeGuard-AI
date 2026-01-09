@@ -133,15 +133,25 @@ export const IssueCard: React.FC<IssueCardProps> = ({ issue, onApplyFix, isFixed
         <div className="border-t border-slate-800 p-4 bg-slate-950/50 animate-in slide-in-from-top-2">
           
           {/* Prominent Clickable Location Header */}
-          <div className="flex items-center justify-between mb-4 pb-4 border-b border-slate-800/50">
-             <div className="flex items-center gap-2 min-w-0 flex-1 mr-4">
-                <FileCode2 className="w-5 h-5 text-indigo-400 flex-shrink-0" />
-                <span className="text-slate-200 font-mono text-sm truncate" title={issue.file}>{issue.file}</span>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 pb-4 border-b border-slate-800/50 gap-3">
+             <div 
+               onClick={handleFileClick}
+               className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer group w-full"
+             >
+                <div className="flex-shrink-0 p-2.5 bg-indigo-500/10 rounded-lg group-hover:bg-indigo-500/20 transition-colors border border-indigo-500/10">
+                  <FileCode2 className="w-5 h-5 text-indigo-400" />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-0.5">Affected File</span>
+                  <code className="text-sm font-mono text-indigo-100 bg-slate-900/80 px-2.5 py-1 rounded border border-slate-700/50 group-hover:border-indigo-500/30 group-hover:bg-slate-900 transition-all truncate" title={issue.file}>
+                    {issue.file}
+                  </code>
+                </div>
              </div>
              
              <button 
                onClick={handleFileClick}
-               className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-md transition-all group hover:bg-indigo-900/20 hover:border-indigo-500/50"
+               className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-md transition-all group hover:bg-indigo-900/20 hover:border-indigo-500/50 shadow-sm ml-auto sm:ml-0"
                title="Scroll to code"
              >
                 <span className="text-xs text-slate-500 font-medium uppercase tracking-wide group-hover:text-slate-400">Line</span>

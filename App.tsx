@@ -5,21 +5,24 @@ import { ScanProgress } from './components/ScanProgress';
 import { Dashboard } from './components/Dashboard';
 import { ChatBot } from './components/ChatBot';
 import { analyzeCodeWithGemini } from './services/geminiService';
-import { ScanResult } from './types';
-import { Search, Github, ArrowRight, X } from 'lucide-react';
+import { ScanResult, Issue } from './types';
+import { Github, ArrowRight, X } from 'lucide-react';
 
 const App: React.FC = () => {
   const [view, setView] = useState<'home' | 'scanning' | 'results'>('home');
   const [repoUrl, setRepoUrl] = useState('');
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  
+  // Hold the active promise so we can pass it to the progress component
+  const [scanTask, setScanTask] = useState<Promise<{ issues: Issue[], scannedFileContent: string }> | null>(null);
 
   const validateUrl = (url: string) => {
     const regex = /^https?:\/\/(www\.)?github\.com\/[\w-]+\/[\w.-]+\/?$/;
     return regex.test(url);
   };
 
-  const handleStartScan = async (e: React.FormEvent) => {
+  const handleStartScan = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     
@@ -34,48 +37,50 @@ const App: React.FC = () => {
       return;
     }
 
+    // Start the scan immediately
+    const task = analyzeCodeWithGemini(trimmedUrl);
+    setScanTask(task);
     setView('scanning');
   };
 
   const handleClearInput = () => {
     setRepoUrl('');
     setError(null);
+    setScanTask(null);
   };
 
-  const handleScanComplete = async () => {
-    try {
-      // Determine the issues via Gemini Service
-      // We pass the repoUrl so the service can fetch real code
-      const { issues, scannedFileContent } = await analyzeCodeWithGemini(repoUrl);
+  const handleScanSuccess = (data: { issues: Issue[], scannedFileContent: string }) => {
+    setScanResult({
+      repoUrl,
+      timestamp: new Date().toISOString(),
+      filesScanned: 1, // In this demo we analyze the first relevant file found
+      durationMs: 0, // Could calculate real duration here
+      issues: data.issues,
+      status: 'completed',
+      scannedFileContent: data.scannedFileContent
+    });
+    
+    setView('results');
+    setScanTask(null); // Cleanup
+  };
+
+  const handleScanError = (err: any) => {
+    console.error("Scan error:", err);
       
-      setScanResult({
-        repoUrl,
-        timestamp: new Date().toISOString(),
-        filesScanned: 1, // In this demo we analyze the first relevant file found
-        durationMs: 5400, 
-        issues: issues,
-        status: 'completed',
-        scannedFileContent: scannedFileContent
-      });
-      
-      setView('results');
-    } catch (err: any) {
-      console.error("Scan error:", err);
-      
-      // User-friendly error mapping
-      let userMessage = "The scan could not be completed.";
-      
-      if (err.message?.includes("API Key")) {
-         userMessage = "System Error: API Key is missing or invalid.";
-      } else if (err.message?.includes("Could not find") || err.message?.includes("fetch")) {
-         userMessage = "Unable to access repository. Please check the URL, ensure it is public, and try again.";
-      } else {
-         userMessage = `Scan failed: ${err.message || "Unknown error"}. Please check the URL and retry.`;
-      }
-      
-      setError(userMessage);
-      setView('home');
+    // User-friendly error mapping
+    let userMessage = "The scan could not be completed.";
+    
+    if (err.message?.includes("API Key")) {
+        userMessage = "System Error: API Key is missing or invalid.";
+    } else if (err.message?.includes("Could not find") || err.message?.includes("fetch")) {
+        userMessage = "Unable to access repository. Please check the URL, ensure it is public, and try again.";
+    } else {
+        userMessage = `Scan failed: ${err.message || "Unknown error"}. Please check the URL and retry.`;
     }
+    
+    setError(userMessage);
+    setView('home');
+    setScanTask(null);
   };
 
   return (
@@ -173,8 +178,12 @@ const App: React.FC = () => {
             </div>
           )}
 
-          {view === 'scanning' && (
-            <ScanProgress onComplete={handleScanComplete} />
+          {view === 'scanning' && scanTask && (
+            <ScanProgress 
+              scanTask={scanTask} 
+              onScanComplete={handleScanSuccess} 
+              onScanError={handleScanError} 
+            />
           )}
 
           {view === 'results' && scanResult && (
