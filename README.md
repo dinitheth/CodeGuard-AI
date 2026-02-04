@@ -55,7 +55,7 @@ To make the application work on Netlify, you must configure the API Key in the e
 
 1.  **Clone the repository**
     ```bash
-    git clone https://github.com/yourusername/codeguard-ai.git
+    git clone https://github.com/dinitheth/CodeGuard-AI
     ```
 
 2.  **Install dependencies**
@@ -77,4 +77,4 @@ To make the application work on Netlify, you must configure the API Key in the e
 
 ---
 
-*Built with love using Google Gemini API.*
+*Built with love using Google Gemini 3 API.*
